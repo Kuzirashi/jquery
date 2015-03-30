@@ -1597,16 +1597,21 @@ module( "ajax", {
 		}
 	} );
 
-	ajaxTest( "#13240 - jQuery.ajax() - support non-RFC2616 methods", 1, {
-		url: "data/echoQuery.php",
-		method: "PATCH",
-		success: function() {
-			ok( true, "success" );
-		},
-		error: function() {
-			ok( false, "error" );
-		}
-	});
+	// BrowserStack PATCH support sometimes breaks so on TestSwarm run the test in IE only.
+	// Unfortunately, all IE versions gets special treatment in request object creation
+	// so we need to test in all supported IE versions to be sure.
+	if ( location.search.indexOf( "swarmURL=" ) === -1 || document.documentMode ) {
+		ajaxTest( "#13240 - jQuery.ajax() - support non-RFC2616 methods", 1, {
+			url: "data/echoQuery.php",
+			method: "PATCH",
+			success: function() {
+				ok( true, "success" );
+			},
+			error: function() {
+				ok( false, "error" );
+			}
+		} );
+	}
 
 	testIframeWithCallback( "#14379 - jQuery.ajax() on unload", "ajax/onunload.html", function( status ) {
 		expect( 1 );
